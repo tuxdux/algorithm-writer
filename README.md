@@ -76,3 +76,18 @@ STEP 1 : A PUBLIC class test is created.
             STEP 19 : PRINTLN "LENGTH is "+l+" :|".
             STEP 20 : BREAK.
 ```
+### How to use
+Clone or download the repository. Then, navigate to the src folder. Compile the `java` files and then run the `AlgorithmWriter` class. You will be asked:
+`Enter the path to the java file for your program:`
+Enter the path to your java file. For example, if you have a `hello.java` file in a directory called `Hello`, which is located in `/home/foo`, then enter the string `/home/foo/Hello/hello.java`. This is the path to your `java` file, for which your algorithm will be written.
+* If you enter `./hello.java`, the program will look for `hello.java` in the directory from which the program was started.
+* If you enter `~/hello.java`, the program will look for `hello.java` in your `home` directory, which, for linux, is `/home/username`.
+If there was an error, you will be told so. **An exception may also be thrown**. If the algorithm was written successfully, the `.txt` file will be saved in the same directory as the `hello.java` file. After completion, a message will be printed and the text file will be opened with the default program for viewing text files.
+Voila! You have an algorithm for your code!
+However, as the message printed after completion says:
+```
+Algorithm Writing was successful!
+It may not be perfect but if you edit it in some places, you are sure to have a working algorithm!
+Here is your txt file : /home/foo/Hello/helloAlgo.txt!
+```
+You may need to edit the algorithm to suit your needs.
