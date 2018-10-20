@@ -7,7 +7,7 @@ public class AlgorithmWriter {
     public static void main(String[] args) {
         AlgorithmWriter algorithmWriter = new AlgorithmWriter();
         Scanner scan = new Scanner(System.in);
-        System.out.println("Enter the path to the the java file for your program:");
+        System.out.println("Enter the path to the java file for your program:");
         String path = scan.nextLine();
         String className = path.substring(path.lastIndexOf(File.separator)+1, path.lastIndexOf('.'));
         if(path.startsWith(".")) {
