@@ -6,6 +6,7 @@ A simple program to create algorithms from an already present `JAVA` program. Th
 2. The algorithms are in no way standard, and in fact, are written in my own style.
 3. This was a project I made for fun, so not everything in the language is handled.
 4. This is not a **pseudocode** writer.
+5. There are **lots** of broken things in this. So do not expect it to work very well.
 
 ### Basic points to follow
 * Always enclose the loops, conditional statements and other such blocks in braces (even the single lines).
@@ -17,6 +18,7 @@ case 1 :
 System.out.println("Hello World!")
 break;
 ```
+* The comments should not be written in line with a statement. Not even multiple-line comments.
 * Obviously, the code should be syntactically correct (language-wise).
 
 ### Example
