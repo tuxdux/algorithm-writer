@@ -4,6 +4,7 @@ import java.util.Scanner;
 public class AlgorithmWriter {
     private int tabs = 0;
     private int step = 1;
+    private boolean commentIsOn = false;
     public static void main(String[] args) {
         AlgorithmWriter algorithmWriter = new AlgorithmWriter();
         Scanner scan = new Scanner(System.in);
@@ -26,15 +27,39 @@ public class AlgorithmWriter {
             PrintWriter writer = new PrintWriter(txtAlgo);
             String line = reader.readLine();
             while(line!=null) {
-                if(line.contains("{")) {
-                    algorithmWriter.openBrace();
-                    line = line.replace("{","");
-                }
-                if(line.contains("}")) {
-                    algorithmWriter.closeBrace();
-                    line = line.replace("}","");
-                }
                 line = line.trim();
+                //If the line is a single line comment
+                if(line.startsWith("//")) {
+                    line = reader.readLine();
+                    continue;
+                }
+                //If this is the start of a new multiple line comment
+                if(line.startsWith("/*") && !algorithmWriter.commentIsOn) {
+                    algorithmWriter.commentIsOn = true;
+                    line = reader.readLine();
+                    continue;
+                }
+                //If a multiple line comment is going on, then do not process this line.
+                if(!line.contains("*/") && algorithmWriter.commentIsOn) {
+                    line = reader.readLine();
+                    continue;
+                }
+                //If a multiple line comment ends here,
+                if(line.contains("*/")) {
+                    algorithmWriter.commentIsOn = false;
+                    line = reader.readLine();
+                    continue;
+                }
+                if(line.startsWith("{")) {
+                    algorithmWriter.openBrace();
+                    line = reader.readLine();
+                    continue;
+                }
+                if(line.startsWith("}")) {
+                    algorithmWriter.closeBrace();
+                    line = reader.readLine();
+                    continue;
+                }
                 if(line.equals("")) {
                     line = reader.readLine();
                     continue;

@@ -144,10 +144,12 @@ class Line {
         else if(isShorthand()) {
             string = processShorthand();
         }
-        //If the line contains a comma, it is a multiple declaration or
-        //multiple initialization. Well, since it doesn't matter that much,
-        //we will just capitalize the data type.
-        else if(line.contains(",")) {
+        //If the line contains a comma and not the 'new' keyword, it is a
+        //multiple declaration or multiple initialization. Well, since it
+        //doesn't matter that much, we will just capitalize the data type.
+        //The check for 'new' keyword is done because an object can be
+        //initialized as : Object obj = new Object(my, parameter);
+        else if(line.contains(",") && !line.contains("new ")) {
             StringBuilder result = new StringBuilder();
             String[] words = line.split("\\s+");
             for(String word : words) {
