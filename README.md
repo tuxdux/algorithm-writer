@@ -2,11 +2,11 @@
 A simple program to create algorithms from an already present `JAVA` program. This might sound really strange, but where I am from, the students need to write algorithms (somewhat like pseudocode, but not really) for every program they write in their projects. Most of them, if not all, are not really interested in writing algorithms. I was one of those students. So I decided to create a program that would write algorithms for me. It is *far* from perfect, and is mostly designed to suit my own style of writing code, so it might not really be useful to you. But if you follow the basic points listed below, this program will create an algorithm for your code. Further, if you make slight changes to the algorithm, you will have what you need! 
 
 ## Keep in mind
-1. This program is made with java, for java.
-2. The algorithms (*pseudocode*) are in no way standard, and in fact, are written in my own style.
-3. This was a project I made for fun, so not everything in the language is handled.
-4. This is not a **standard** pseudocode writer. But the result produced might be considered a pseudocode.
-5. There are **lots** of broken things in this. So do not expect it to work very well.
+* This program is made with java, for java.
+* The algorithms (*pseudocode*) are in no way standard, and in fact, are written in my own style.
+* This was a project I made for fun, so not everything in the language is handled.
+* This is not a **standard** pseudocode writer. But the result produced might be considered a pseudocode.
+* There are **lots** of broken things in this. So do not expect it to work very well.
 
 ## Basic points to follow
 * Always enclose the loops, conditional statements and other such blocks in braces (even the single lines).
@@ -78,6 +78,15 @@ STEP 1 : A PUBLIC class test is created.
             STEP 19 : PRINTLN "LENGTH is "+l+" :|".
             STEP 20 : BREAK.
 ```
+## Syntax of result
+The syntax of the result, which might be considered a pseudocode to some extent, is somewhat similar to that used in the book `Introduction to Algorithms`. It may be explained as:
+
+* Indentation indicates block structure. For example, in the above example, the steps 7, 8 and 9 are inside the `for` loop started in step 6, but step 9 is out of it. Similarly, step 8 is inside the `if` statement in step 7, but step 9 is out of it.
+* The symbol `←` indicates only assignment, and not initialization, which is specified by words. So, the statement `l ← other.length()` means that the value `other.length()` is assigned to the variable `l`.
+* The access modifiers, if any, are mentioned in the result. So, if a variable is declared as : `public boolean l`, the result is `A variable PUBLIC BOOLEAN l is declared`.
+
+And for other conventions, you will have to try different things!
+
 ## How to use
 Clone or download the repository. Then, navigate to the src folder. Compile the `java` files and then run the `AlgorithmWriter` class. You will be asked:
 `Enter the path to the java file for your program:`
