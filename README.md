@@ -1,14 +1,14 @@
 # algorithm-writer
 A simple program to create algorithms from an already present `JAVA` program. This might sound really strange, but where I am from, the students need to write algorithms (somewhat like pseudocode, but not really) for every program they write in their projects. Most of them, if not all, are not really interested in writing algorithms. I was one of those students. So I decided to create a program that would write algorithms for me. It is *far* from perfect, and is mostly designed to suit my own style of writing code, so it might not really be useful to you. But if you follow the basic points listed below, this program will create an algorithm for your code. Further, if you make slight changes to the algorithm, you will have what you need! 
 
-### Keep in mind
+## Keep in mind
 1. This program is made with java, for java.
 2. The algorithms (*pseudocode*) are in no way standard, and in fact, are written in my own style.
 3. This was a project I made for fun, so not everything in the language is handled.
 4. This is not a **standard** pseudocode writer. But the result produced might be considered a pseudocode.
 5. There are **lots** of broken things in this. So do not expect it to work very well.
 
-### Basic points to follow
+## Basic points to follow
 * Always enclose the loops, conditional statements and other such blocks in braces (even the single lines).
 * Put all your braces in a separate line and **NOT** like `if(someCondition) { //Do something } `.
 * Do **NOT** write two statements in a single line.
@@ -21,7 +21,7 @@ break;
 * The comments should not be written in line with a statement. Not even multiple-line comments.
 * Obviously, the code should be syntactically correct (language-wise).
 
-### Example
+## Example
 This is an example code (Notice the syntax and format. The indentation is not required, but the statements should be on separate lines.):
 ```
 public class test
@@ -78,7 +78,7 @@ STEP 1 : A PUBLIC class test is created.
             STEP 19 : PRINTLN "LENGTH is "+l+" :|".
             STEP 20 : BREAK.
 ```
-### How to use
+## How to use
 Clone or download the repository. Then, navigate to the src folder. Compile the `java` files and then run the `AlgorithmWriter` class. You will be asked:
 `Enter the path to the java file for your program:`
 Enter the path to your java file. For example, if you have a `hello.java` file in a directory called `Hello`, which is located in `/home/foo`, then enter the string `/home/foo/Hello/hello.java`. This is the path to your `java` file, for which your algorithm will be written.
