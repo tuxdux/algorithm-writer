@@ -66,6 +66,10 @@ class Line {
             else
                 string = "PRINT "+toPrint;
         }
+        //Handling the void return.
+        else if(line.equals("return")) {
+            string = "RETURN";
+        }
         else if(line.contains("return ")) {
             string = "RETURN ";
             String[] words = line.split("\\s+");
@@ -109,6 +113,9 @@ class Line {
         else if(line.endsWith(":")) {
             String tag = line.substring(0, line.indexOf(':')).trim();
             string = "Tagged as "+tag+" :";
+        }
+        else if(line.equals("finally")){
+            string = "FINALLY";
         }
         else if(isClassLine()) {
             string = processClass();
