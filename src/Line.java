@@ -43,6 +43,11 @@ class Line {
         }
         //Remove any braces in the declaration.
         line = line.replace("{", "");
+        //If the line contains a closing brace and not an equal to sign,
+        //which can be used in array initialization, then remove the brace.
+        if(!line.contains("=") && line.contains("}")) {
+            line = line.replace("}", "");
+        }
         //Trim the line
         line = line.trim();
         //Finally, store the line in the class variable.
@@ -51,8 +56,11 @@ class Line {
     }
     String process() {
         String string;
+        if(line.equals("")) {
+            string = "";
+        }
         //We begin by checking if the line contains the package keyword.
-        if(line.contains("package ")) {
+        else if(line.contains("package ")) {
             line = line.replace("package", "PACKAGE");
             string = "This class is in "+line;
         }

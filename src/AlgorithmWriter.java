@@ -52,13 +52,9 @@ public class AlgorithmWriter {
                 }
                 if(line.startsWith("{")) {
                     algorithmWriter.openBrace();
-                    line = reader.readLine();
-                    continue;
                 }
                 if(line.startsWith("}")) {
                     algorithmWriter.closeBrace();
-                    line = reader.readLine();
-                    continue;
                 }
                 if(line.equals("")) {
                     line = reader.readLine();
@@ -81,6 +77,15 @@ public class AlgorithmWriter {
                 }
                 writer.println(processed);
                 algorithmWriter.nextStep();
+                //If the line ends with an opening brace, as is the case with
+                //most IDEs, make sure the next step is properly indented.
+                if(line.endsWith("{")) {
+                    algorithmWriter.openBrace();
+                }
+                //Same as above.
+                if(line.endsWith("}")) {
+                    algorithmWriter.closeBrace();
+                }
                 line = reader.readLine();
             }
             writer.close();
