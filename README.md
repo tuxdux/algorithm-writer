@@ -102,3 +102,11 @@ It may not be perfect but if you edit it in some places, you are sure to have a 
 Here is your txt file : /home/foo/Hello/helloAlgo.txt!
 ```
 You may need to edit the algorithm to suit your needs.
+
+## About usage in BlueJ
+You may compile the `java` files in BlueJ if you like, and then run it from there.
+* Open BlueJ.
+* Navigate to `Edit > Add Class from File`.
+* Then choose both the files in the `src` folder.
+* Compile both files.
+* Run the `main` method in the `AlgorithmWriter` class.
