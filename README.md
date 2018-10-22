@@ -11,6 +11,15 @@ A simple program to create algorithms from an already present `JAVA` program. Th
 ## Basic points to follow
 * Always enclose the loops, conditional statements and other such blocks in braces (even the single lines).
 * Put all your braces in a separate line and **NOT** like `if(someCondition) { //Do something } `.
+* Now supports inline braces, as is default in most IDEs, like Eclipse, Intellij and NetBeans. For example :
+```
+if(world.exists()) {
+System.out.println("Hello World!");
+}
+else {
+System.out.println("sad_face");
+}
+```
 * Do **NOT** write two statements in a single line.
 * Even with `case` statements, the code should look like :
 ```

@@ -50,6 +50,11 @@ class Line {
         else if(line.contains("{") && line.contains("=")) {
             arrayInitialization = true;
         }
+        //If the line contains a closing brace, but not an equal-to
+        //sign, remove the brace.
+        if(!line.contains("=") && line.contains("}")) {
+            line = line.replace("}","");
+        }
         //Trim the line
         line = line.trim();
         //Finally, store the line in the class variable.
@@ -65,9 +70,6 @@ class Line {
         else if(line.contains("package ")) {
             line = line.replace("package", "PACKAGE");
             string = "This class is in "+line;
-        }
-        else if(arrayInitialization) {
-            string = processArrayInitialization();
         }
         else if(line.contains("import ")) {
             line = line.replace("import", "IMPORT");
@@ -171,6 +173,9 @@ class Line {
         //definition.
         else if(isMethod()) {
             string = processMethod();
+        }
+        else if(arrayInitialization) {
+            string = processArrayInitialization();
         }
         else if(isShorthand()) {
             string = processShorthand();
