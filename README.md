@@ -15,11 +15,12 @@ A simple program to create algorithms from an already present `JAVA` program. Th
 * Even with `case` statements, the code should look like :
 ```
 case 1 :
-System.out.println("Hello World!")
+System.out.println("Hello World!");
 break;
 ```
 * The comments should not be written in line with a statement. Not even multiple-line comments.
 * Obviously, the code should be syntactically correct (language-wise).
+* If you have used BlueJ, then the syntax you follow there should work.
 
 ## Example
 This is an example code (Notice the syntax and format. The indentation is not required, but the statements should be on separate lines.):
