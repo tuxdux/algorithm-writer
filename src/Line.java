@@ -645,9 +645,11 @@ class Line {
     private boolean hasArrayAsMajorValue(String value) {
         int squareBracketIndex = value.indexOf('[');
         int roundBracketIndex = value.indexOf('(');
+        if(squareBracketIndex==-1)
+            return false;
         //If there are no round brackets, then this obviously
         //is an array value.
-        if(roundBracketIndex==-1 && squareBracketIndex>=0)
+        if(roundBracketIndex==-1)
             return true;
         //If the round bracket comes before the square bracket,
         //then this means that this is an object and not an array.
