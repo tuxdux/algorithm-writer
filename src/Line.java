@@ -7,6 +7,7 @@ class Line {
             "String", "long", "void"};
     private String[] accessModifiers = {"public", "private", "protected", "volatile"};
     private boolean semicolon = false;
+    private boolean arrayInitialization = false;
     Line(String line, String className) {
         //Remove any single line comments
         if(line.contains("//")) {
@@ -41,12 +42,13 @@ class Line {
                 line = line.replace(";", "");
             }
         }
-        //Remove any braces in the declaration.
-        line = line.replace("{", "");
-        //If the line contains a closing brace and not an equal to sign,
-        //which can be used in array initialization, then remove the brace.
-        if(!line.contains("=") && line.contains("}")) {
-            line = line.replace("}", "");
+        //If the line contains a brace, but not an equal-to sign,
+        //then this is just a brace for a new block.
+        if(line.contains("{") && !line.contains("=")) {
+            line = line.replace("{", "");
+        }
+        else if(line.contains("{") && line.contains("=")) {
+            arrayInitialization = true;
         }
         //Trim the line
         line = line.trim();
@@ -63,6 +65,9 @@ class Line {
         else if(line.contains("package ")) {
             line = line.replace("package", "PACKAGE");
             string = "This class is in "+line;
+        }
+        else if(arrayInitialization) {
+            string = processArrayInitialization();
         }
         else if(line.contains("import ")) {
             line = line.replace("import", "IMPORT");
@@ -318,6 +323,22 @@ class Line {
         }
         return result.toString();
     }
+    private String processArrayInitialization() {
+        StringBuilder result = new StringBuilder();
+        int equalTo = line.indexOf("=");
+        String firstPart = line.substring(0, equalTo);
+        firstPart = removeUnnecessarySpaces(firstPart);
+        String values = line.substring(equalTo+1);
+        String[] words = firstPart.split("\\s+");
+        for(int i=0; i<words.length; i++) {
+            processWordInFirstPart(words[i], result, i == words.length - 1);
+        }
+        result.append(" ").append("is instantiated with values ").append(values);
+        String res = result.toString();
+        //Just making the line clean, by removing any consecutive spaces.
+        res = res.replaceAll("\\s+", " ");
+        return res;
+    }
     private String processShorthand() {
         //Remove all spaces in the line so that they are not
         //included in either of the three builders below.
@@ -357,7 +378,7 @@ class Line {
             case "|=" : result.append(" is OR'ed with "); break;
             case "&=" : result.append(" is AND'ed with "); break;
             case "<<=" : result.append(" is signed left-bit-shifted by "); break;
-            case ">>=" : result.append(" is signed left-bit-shifted by "); break;
+            case ">>=" : result.append(" is signed right-bit-shifted by "); break;
             case ">>>=" : result.append(" is unsigned right-bit-shifted by "); break;
             default : result.append(" ").append(operator).append(" "); break;
         }
@@ -410,6 +431,8 @@ class Line {
             //Now we get the first and second part in separate strings.
             String firstPart = parts[0].trim();
             String secondPart = parts[1].trim();
+            //Remove unnecessary spaces from the first part of the line.
+            firstPart = removeUnnecessarySpaces(firstPart);
             //Split the parts further into single words.
             String[] firstPartWords = firstPart.split("\\s+");
 
@@ -490,9 +513,9 @@ class Line {
                 result.append("The function ").append(method).append(" from object ").
                         append(object).append(" is called.");
             }
-            //If the line contains a bracket, it is calling a method.
+            //If the line contains a bracket, it is calling a member method.
             else if(line.contains("(")) {
-                result.append("The method ").append(line).append(" is called.");
+                result.append("The member method ").append(line).append(" is called.");
             }
             else {
                 String[] words = line.split("\\s+");
@@ -664,6 +687,24 @@ class Line {
         //Thus we check if the index of square bracket is less than
         //that of round bracket.
         return squareBracketIndex<roundBracketIndex;
+    }
+    private String removeUnnecessarySpaces(String firstPart) {
+        String[] words = firstPart.split("\\s+");
+        StringBuilder result = new StringBuilder();
+        for(String word : words) {
+            //If the word starts with a bracket, we add it without a space.
+            //The check is 'starts' with a bracket because an array can be declared
+            //as String[ ][ ] array;
+            //Notice that the second word will be "][" and not just "]".
+            if(word.startsWith("[") || word.startsWith("]") ||
+                word.startsWith("(") || word.startsWith(")")) {
+                result.append(word);
+            }
+            else {
+                result.append(" ").append(word);
+            }
+        }
+        return result.toString().trim();
     }
     private boolean isAccessModifier(String word) {
         for(String modifier : accessModifiers) {
