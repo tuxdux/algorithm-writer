@@ -36,7 +36,12 @@ case 1 :
 System.out.println("Hello World!");
 break;
 ```
-* The comments should not be written in line with a statement. Not even multiple-line comments.
+The mutiple line comments could be like :
+```
+/*This is a comment.
+The comment is still going on.*/
+System.out.println("Comment finished.");
+```
 * Obviously, the code should be syntactically correct (language-wise).
 * If you have used BlueJ, then the syntax you follow there should work.
 
