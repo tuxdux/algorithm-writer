@@ -45,7 +45,7 @@ public class AlgorithmWriter {
                     continue;
                 }
                 //If a multiple line comment ends here,
-                if(line.contains("*/")) {
+                if(line.contains("*/") && algorithmWriter.commentIsOn) {
                     algorithmWriter.commentIsOn = false;
                     line = reader.readLine();
                     continue;
@@ -71,7 +71,7 @@ public class AlgorithmWriter {
                 processed = algorithmWriter.getTabs()+"STEP "+
                         algorithmWriter.getStep()+" : "+processed;
                 //If there is no full stop at the end of the processed line.
-                if(!processed.endsWith(".")) {
+                if(!processed.endsWith(".") && !processed.endsWith(":")) {
                     //Add it.
                     processed += ".";
                 }

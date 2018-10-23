@@ -7,7 +7,7 @@ class Line {
             "String", "long", "void"};
     private String[] accessModifiers = {"public", "private", "protected", "volatile"};
     private boolean semicolon = false;
-    private boolean arrayInitialization = false;
+    private boolean arrayInitialization;
     Line(String line, String className) {
         //Remove any single line comments
         if(line.contains("//")) {
@@ -17,8 +17,8 @@ class Line {
         }
         //Remove any multiple line comments within the line itself
         //Example : A multiple line comment can be inserted in a statement as :
-        //          if(/*Hello*/n==10)
-        if(line.contains("/*")) {
+        //         if(/*Hello*/n==10)
+        if(line.contains("/*") && line.contains("*/")) {
             int start = line.indexOf('/');
             int end = line.lastIndexOf('/');
             //This is the comment without the last '/'. Suppose the comment
@@ -30,41 +30,50 @@ class Line {
             //Then, we remove the comment
             line = line.replace(comment, "");
         }
-        //If the line contains semicolon, it is a statement.
-        if(line.contains(";")) {
+        if(line.endsWith("{")) {
+            //We do not replace all the braces, because of the reason above.
+            line = line.substring(0,line.length()-1);
+        }
+        //If line starts with a closing brace, we do not process the line.
+        //This is why you should read the README.md file once again.
+        if(line.startsWith("}")) {
+            line = "";
+        }
+        //If the line ends with a semicolon, it is a statement.
+        if(line.endsWith(";")) {
             semicolon = true;
-            if(line.startsWith("for")) {
-                //Replace the semicolon with comma for clarity.
-                line = line.replace(";", ",");
-            }
-            else {
-                //Remove the semicolon.
-                line = line.replace(";", "");
-            }
-        }
-        //If the line contains a brace, but not an equal-to sign,
-        //then this is just a brace for a new block.
-        if(line.contains("{") && !line.contains("=")) {
-            line = line.replace("{", "");
-        }
-        else if(line.contains("{") && line.contains("=")) {
-            arrayInitialization = true;
-        }
-        //If the line contains a closing brace, but not an equal-to
-        //sign, remove the brace.
-        if(!line.contains("=") && line.contains("}")) {
-            line = line.replace("}","");
+            //We do not simply replace all semicolons because it can be inside
+            //an if statement or a character for that matter.
+            line = line.substring(0,line.length()-1);
         }
         //Trim the line
         line = line.trim();
         //Finally, store the line in the class variable.
         this.line = line;
         this.className = className;
+        arrayInitialization = isArrayInitialization();
     }
     String process() {
         String string;
         if(line.equals("")) {
             string = "";
+        }
+        else if(isClassLine()) {
+            string = processClass();
+        }
+        //Check if the line is a constructor declaration.
+        else if(isConstructor()) {
+            string = processConstructor();
+        }
+        //If line is not a constructor, check if it is
+        //the statement for a loop.
+        else if(isLoop()) {
+            string = processLoop();
+        }
+        //If it is not even a loop, check if it is start of a conditional
+        //statement.
+        else if(isCondition()) {
+            string = processCondition();
         }
         //We begin by checking if the line contains the package keyword.
         else if(line.contains("package ")) {
@@ -83,6 +92,9 @@ class Line {
         else if(line.contains("System.out.print")) {
             int firstBracket = line.indexOf("(");
             int lastBracket = line.lastIndexOf(")");
+            if(lastBracket==-1) {
+                lastBracket = line.length()-1;
+            }
             String toPrint = line.substring(firstBracket+1,lastBracket);
             if(toPrint.equals("")) {
                 toPrint = "\'Blank Line\'";
@@ -97,14 +109,7 @@ class Line {
             string = "RETURN";
         }
         else if(line.contains("return ")) {
-            string = "RETURN ";
-            String[] words = line.split("\\s+");
-            StringBuilder value = new StringBuilder();
-            for(String word : words) {
-                if(!word.equals("return"))
-                    value.append(word);
-            }
-            string += value.toString();
+            string = line.replace("return", "RETURN");
         }
         else if(line.startsWith("switch(") || line.startsWith("switch (")) {
             string = "SWITCH";
@@ -117,7 +122,7 @@ class Line {
             string = line.replace("case", "CASE");
             string = string.replace(":", "").trim();
         }
-        else if(line.startsWith("default ")) {
+        else if(line.startsWith("default:") || line.startsWith("default ")) {
             string = line.replace("default", "DEFAULT");
             string = string.replace(":", "").trim();
         }
@@ -142,23 +147,6 @@ class Line {
         }
         else if(line.equals("finally")){
             string = "FINALLY";
-        }
-        else if(isClassLine()) {
-            string = processClass();
-        }
-        //Check if the line is a constructor declaration.
-        else if(isConstructor()) {
-            string = processConstructor();
-        }
-        //If line is not a constructor, check if it is
-        //the statement for a loop.
-        else if(isLoop()) {
-            string = processLoop();
-        }
-        //If it is not even a loop, check if it is start of a conditional
-        //statement.
-        else if(isCondition()) {
-            string = processCondition();
         }
         //If the statement is the start of a try statement, just replace the
         //'try' keyword with 'TRY'.
@@ -213,10 +201,15 @@ class Line {
         return  beforeEqual!=' ' && !Character.isLetterOrDigit(beforeEqual);
     }
     private boolean isClassLine() {
-        return line.contains("class ");
+        return line.contains("class ") && !line.contains("(");
     }
     private boolean isConstructor() {
-        return line.contains(className+"(") && !line.contains("=");
+        if(!line.contains(className)) {
+            return false;
+        }
+        line = removeUnnecessarySpaces(line);
+        String[] words = line.split("\\s+");
+        return words.length<2;
     }
     private boolean isTry() {
         return line.equals("try") || line.startsWith("try(") || line.startsWith("try (");
@@ -234,12 +227,24 @@ class Line {
     private boolean isCondition() {
         //If the line starts with "if", "else if" or "else", the line
         //is a conditional statement.
-        return line.startsWith("if") || line.startsWith("else");
+        return line.startsWith("if ") || line.startsWith("else ") ||
+                line.startsWith("if(") || line.equals("else");
     }
     private boolean isLoop() {
         //If the line contains 'for' or 'while' or 'do' the line is
         //a loop statement.
         return line.startsWith("for") || line.startsWith("while") || line.startsWith("do");
+    }
+    private boolean isArrayInitialization() {
+        int bracket = line.indexOf('(');
+        int brace = line.indexOf('{');
+        if(brace==-1)
+            return false;
+        if(bracket==-1)
+            return true;
+        //If the brace comes before the bracket, then this is an
+        //array initialization.
+        return brace<bracket;
     }
     private boolean isCommaStatement() {
         //There can be a method call like method(parameter1, parameter2);
@@ -251,27 +256,26 @@ class Line {
         return line.contains(",") && !line.contains("(");
     }
     private String processClass() {
-        line = line.replace("class","");
         StringBuilder result = new StringBuilder("A ");
         String[] words = line.split("\\s+");
         for (String word : words) {
             if (isAccessModifier(word)) {
                 result.append(word.toUpperCase());
-            } else if (word.equals(className)) {
-                result.append(" class ").append(className);
-            } else if (word.equals("extends")) {
+            }
+            else if (word.equals("extends")) {
                 result.append(" which inherits from class ");
-            } else if (word.equals("implements")) {
+            }
+            else if (word.equals("implements")) {
                 result.append(" which implements an interface ");
             }
             //If the above conditions are false, then this word is either
             //the super class or an interface.
             else{
-                result.append(word);
+                result.append(" ").append(word);
             }
         }
         result.append(" is created.");
-        return result.toString();
+        return result.toString().replaceAll("\\s+", " ");
     }
     private String processConstructor() {
         //The index of the first bracket. The constructor line
@@ -387,6 +391,9 @@ class Line {
             case ">>>=" : result.append(" is unsigned right-bit-shifted by "); break;
             default : result.append(" ").append(operator).append(" "); break;
         }
+        if(hasArrayAsMajorValue(value.toString())) {
+            value = new StringBuilder(processArrayValue(value.toString()));
+        }
         result.append("the value given by ").append(value);
         return result.toString();
     }
@@ -421,8 +428,15 @@ class Line {
         int lastBracket = line.lastIndexOf(')');
         //This is the type of if statement (simple if or else if)
         String type = line.substring(0,firstBracket).trim();
-        //This is the actual condition, even without the brackets.
-        String condition = line.substring(firstBracket+1, lastBracket).trim();
+        String condition;
+        if(lastBracket==-1) {
+            //The condition when there is no bracket at the end of the line.
+            condition = line.substring(firstBracket+1);
+        }
+        else {
+            //This is the actual condition, even without the brackets.
+            condition = line.substring(firstBracket + 1, lastBracket).trim();
+        }
         return type.toUpperCase()+" "+condition;
     }
     private String processStatement() {
@@ -517,6 +531,10 @@ class Line {
                 String method = parts[1].trim();
                 result.append("The function ").append(method).append(" from object ").
                         append(object).append(" is called.");
+                if(parts.length>2) {
+                    result = new StringBuilder();
+                    result.append(removeUnnecessarySpaces(line)).append(" is performed respectively.");
+                }
             }
             //If the line contains a bracket, it is calling a member method.
             else if(line.contains("(")) {
@@ -655,13 +673,13 @@ class Line {
             String object = parts[0];
             //and second part is the identifier of the actual array.
             String array = parts[1];
-            variable = array+" of object "+object;
+            variable = array+"\' of object "+object;
         }
         if(dimension==1) {
             int lastBracket = value.indexOf(']');
             //The index of the element which is asked.
             String index = value.substring(firstBracket+1, lastBracket);
-            result.append("element ").append(index).append(" of array ").append(variable);
+            result.append("element \'").append(index).append("\' of array \'").append(variable).append("\'");
             return result.toString();
         }
         else if(dimension==2) {
@@ -670,8 +688,8 @@ class Line {
             int lastCloseBracket = value.lastIndexOf(']');
             String row = value.substring(firstBracket+1,firstCloseBracket);
             String column = value.substring(secondBracket+1, lastCloseBracket);
-            result.append("element at row ").append(row).append(" and column ").
-                    append(column).append(" of array ").append(variable);
+            result.append("element at row \'").append(row).append("\' and column \'").
+                    append(column).append("\' of array \'").append(variable);
             return result.toString();
         }
         else {
