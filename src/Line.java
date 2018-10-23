@@ -31,7 +31,8 @@ class Line {
             line = line.replace(comment, "");
         }
         if(line.endsWith("{")) {
-            //We do not replace all the braces, because of the reason above.
+            //We do not replace all the braces, because it can be inside
+            //an if statement or a character for that matter.
             line = line.substring(0,line.length()-1);
         }
         //If line starts with a closing brace, we do not process the line.
@@ -39,6 +40,7 @@ class Line {
         if(line.startsWith("}")) {
             line = "";
         }
+        line = line.trim();
         //If the line ends with a semicolon, it is a statement.
         if(line.endsWith(";")) {
             semicolon = true;
@@ -186,7 +188,7 @@ class Line {
         else {
             string = processStatement();
         }
-        return string.trim();
+        return string.trim().replaceAll("\\s+", " ");
     }
 
     private boolean isShorthand() {
@@ -275,7 +277,7 @@ class Line {
             }
         }
         result.append(" is created.");
-        return result.toString().replaceAll("\\s+", " ");
+        return result.toString();
     }
     private String processConstructor() {
         //The index of the first bracket. The constructor line
@@ -343,10 +345,7 @@ class Line {
             processWordInFirstPart(words[i], result, i == words.length - 1);
         }
         result.append(" ").append("is instantiated with values ").append(values);
-        String res = result.toString();
-        //Just making the line clean, by removing any consecutive spaces.
-        res = res.replaceAll("\\s+", " ");
-        return res;
+        return result.toString();
     }
     private String processShorthand() {
         //Remove all spaces in the line so that they are not
@@ -415,6 +414,10 @@ class Line {
         else {
             condition = "\b";
             loopType = "do";
+        }
+        if(condition.contains(":")) {
+            condition = condition.replace(":", " and ");
+            condition = removeUnnecessarySpaces(condition);
         }
         return loopType.toUpperCase()+" "+condition;
     }
@@ -488,9 +491,21 @@ class Line {
                                 append(secondPart);
                 }
                 else {
-                    //Now we format the assignment statement.
+                    //Now, we format the assignment statement.
+                    //Since there can be more than one assignments in the same
+                    //line, we add all the parts.
                     //Here, \u2190 is the left arrow in UTF-8.
-                    result.append(" ").append('\u2190').append(" ").append(secondPart);
+                    char arrow = '\u2190';
+                    parts = line.split("\\s+");
+                    result = new StringBuilder();
+                    for(String part : parts) {
+                        if(part.equals("=")) {
+                            result.append(arrow).append(" ");
+                        }
+                        else {
+                            result.append(part).append(" ");
+                        }
+                    }
                 }
             }
             //If this statement is not an assignment statement, then this
