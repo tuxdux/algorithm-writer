@@ -21,6 +21,15 @@ System.out.println("sad_face");
 }
 ```
 * Do **NOT** write two statements in a single line.
+* Try not to have comments in the same line as other statements. So avoid :
+```
+if(someCondition) //Explain the condition.
+```
+Instead, you can do something like :
+```
+//Explain the condition
+if(someCondition)
+```
 * Even with `case` statements, the code should look like :
 ```
 case 1 :
