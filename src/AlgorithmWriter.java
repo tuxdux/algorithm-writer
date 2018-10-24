@@ -5,6 +5,7 @@ public class AlgorithmWriter {
     private int tabs = 0;
     private int step = 1;
     private boolean commentIsOn = false;
+    private int lineNumber = 0;
     public static void main(String[] args) {
         AlgorithmWriter algorithmWriter = new AlgorithmWriter();
         Scanner scan = new Scanner(System.in);
@@ -27,6 +28,8 @@ public class AlgorithmWriter {
             PrintWriter writer = new PrintWriter(txtAlgo);
             String line = reader.readLine();
             while(line!=null) {
+                //Next line.
+                algorithmWriter.nextLine();
                 line = line.trim();
                 //If the line is a single line comment
                 if(line.startsWith("//")) {
@@ -101,6 +104,14 @@ public class AlgorithmWriter {
             System.out.println("Are you positive that there is a "+file.getName()+
                     " file in that directory?");
         }
+        //Other exceptions caused most probably due to bad formatting.
+        catch(Exception e) {
+            System.out.println("[!] Error Occurred.");
+            System.out.println("[!] "+e.getMessage());
+            System.out.println("[#] Could you check line number "+algorithmWriter.lineNumber+
+                    " in your java file?");
+            System.out.println("[#] Format it according to the README.md");
+        }
     }
     private String getTabs() {
         StringBuilder tab = new StringBuilder();
@@ -116,6 +127,9 @@ public class AlgorithmWriter {
     }
     private void nextStep() {
         step++;
+    }
+    private void nextLine() {
+        lineNumber++;
     }
     private int getStep() {
         return step;
