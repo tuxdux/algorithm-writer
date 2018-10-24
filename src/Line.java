@@ -9,16 +9,10 @@ class Line {
     private boolean semicolon = false;
     private boolean arrayInitialization;
     Line(String line, String className) {
-        //Remove any single line comments
-        if(line.contains("//")) {
-            int index = line.indexOf('/');
-            //The line without the // comment
-            line = line.substring(0,index);
-        }
         //Remove any multiple line comments within the line itself
         //Example : A multiple line comment can be inserted in a statement as :
         //         if(/*Hello*/n==10)
-        if(line.contains("/*") && line.contains("*/")) {
+        if(isMultipleLineComment(line)) {
             int start = line.indexOf('/');
             int end = line.lastIndexOf('/');
             //This is the comment without the last '/'. Suppose the comment
@@ -237,6 +231,17 @@ class Line {
         //a loop statement.
         return line.startsWith("for") || line.startsWith("while") || line.startsWith("do");
     }
+    private boolean isMultipleLineComment(String line) {
+        int quoteOpen = line.indexOf('\"');
+        int quoteClose = line.lastIndexOf('\"');
+        int commentStart = line.indexOf("/*");
+        if(commentStart==-1) {
+            return false;
+        }
+        //If the symbol is in between the quotes, there is not a comment,
+        //but a string with '/*' in it.
+        return commentStart <= quoteOpen || commentStart >= quoteClose;
+    }
     private boolean isArrayInitialization() {
         int bracket = line.indexOf('(');
         int brace = line.indexOf('{');
@@ -416,7 +421,7 @@ class Line {
             loopType = "do";
         }
         if(condition.contains(":")) {
-            condition = condition.replace(":", " and ");
+            condition = condition.replace(":", " in ");
             condition = removeUnnecessarySpaces(condition);
         }
         return loopType.toUpperCase()+" "+condition;
@@ -608,7 +613,9 @@ class Line {
         else if(!isLast) {
             //If the word contains double square brackets, this line has
             //something to do with arrays.
-            if(word.contains("[]")) {
+            //Check for "<" is done because you can have an ArrayList like
+            //ArrayList<String[]> list;
+            if(word.contains("[]") && !word.contains("<")) {
                 //We count the number of brackets in this word so as
                 //to calculate the dimension of the array.
                 int dimension = 0;

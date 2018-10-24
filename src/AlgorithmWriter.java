@@ -30,6 +30,8 @@ public class AlgorithmWriter {
             while(line!=null) {
                 //Next line.
                 algorithmWriter.nextLine();
+                //Remove any single line comments
+                line = algorithmWriter.removeSingleLineComment(line);
                 line = line.trim();
                 //If the line is a single line comment
                 if(line.startsWith("//")) {
@@ -118,6 +120,25 @@ public class AlgorithmWriter {
         for(int i=0; i<tabs; i++)
             tab.append("\t");
         return tab.toString();
+    }
+    private String removeSingleLineComment(String line) {
+        int length = line.length();
+        int numberOfBrackets = 0;
+        StringBuilder result = new StringBuilder();
+        for(int i=0; i<length; i++) {
+            char ch = line.charAt(i);
+            if(ch=='(') {
+                numberOfBrackets++;
+            }
+            else if(ch==')') {
+                numberOfBrackets--;
+            }
+            if(numberOfBrackets==0 && ch=='/') {
+                return result.toString();
+            }
+            result.append(ch);
+        }
+        return result.toString();
     }
     private void openBrace() {
         tabs++;

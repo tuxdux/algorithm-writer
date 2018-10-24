@@ -10,7 +10,6 @@ A simple program to create algorithms from an already present `JAVA` program. Th
 
 ## Basic points to follow
 * Always enclose the loops, conditional statements and other such blocks in braces (even the single lines).
-* Put all your braces in a separate line and **NOT** like `if(someCondition) { //Do something } `.
 * Now supports inline braces, as is default in most IDEs, like Eclipse, Intellij and NetBeans. For example :
 ```
 if(world.exists()) {
@@ -21,26 +20,32 @@ System.out.println("sad_face");
 }
 ```
 * Do **NOT** write two statements in a single line.
-* Try not to have comments in the same line as other statements. So avoid :
+* Do **NOT** write a single statement in two lines. So avoid :
 ```
-if(someCondition) //Explain the condition.
+if(someCondition ||
+    someOtherCondition)
 ```
-Instead, you can do something like :
+You should write like :
 ```
-//Explain the condition
-if(someCondition)
+if(someCondition || someOtherCondition)
 ```
+Similarly, avoid :
+```
+System.out.println("My first string"+
+                   "My second string");
+```
+* Added support for inline comments. Now you can write like :
+```
+if(someCondition) { //This is a comment.
+System.out.println("My work.");
+}
+```
+This feature, however, might be buggy with multiple line comments.
 * Even with `case` statements, the code should look like :
 ```
 case 1 :
 System.out.println("Hello World!");
 break;
-```
-The mutiple line comments could be like :
-```
-/*This is a comment.
-The comment is still going on.*/
-System.out.println("Comment finished.");
 ```
 * Obviously, the code should be syntactically correct (language-wise).
 * If you have used BlueJ, then the syntax you follow there should work.
@@ -82,25 +87,25 @@ public class test
 This is the algorithm written by the algorithm-writer (The indentation is made automatically):
 ```
 STEP 1 : A PUBLIC class test is created.
-    STEP 2 : A method PUBLIC STATIC VOID main(String[] args) is created.
-        STEP 3 : STRING variable string is instantiated to value "Hello world!".
-        STEP 4 : INT variable l is instantiated to value string.length().
-        STEP 5 : STRING variable other is instantiated to value "".
-        STEP 6 : FOR int i=0 i<l i++.
-            STEP 7 : IF (i+1)%2==0.
-                STEP 8 : CONTINUE.
-            STEP 9 : other is added with the value given by string.charAt(i).
-        STEP 10 : l ← other.length().
-        STEP 11 : SWITCH l.
-            STEP 12 : CASE 3.
-            STEP 13 : PRINTLN "LENGTH is 3 :)".
-            STEP 14 : BREAK.
-            STEP 15 : CASE 5.
-            STEP 16 : PRINTLN "LENGTH is 5 :(".
-            STEP 17 : BREAK.
-            STEP 18 : DEFAULT.
-            STEP 19 : PRINTLN "LENGTH is "+l+" :|".
-            STEP 20 : BREAK.
+	STEP 2 : A method PUBLIC STATIC VOID main(String[] args) is created.
+		STEP 3 : STRING variable string is instantiated to value "Hello world!".
+		STEP 4 : INT variable l is instantiated to value string.length().
+		STEP 5 : STRING variable other is instantiated to value "".
+		STEP 6 : FOR int i=0; i<l; i++.
+			STEP 7 : IF (i+1)%2==0.
+				STEP 8 : CONTINUE.
+			STEP 9 : other is added with the value given by string.charAt(i).
+		STEP 10 : l ← other.length().
+		STEP 11 : SWITCH l.
+			STEP 12 : CASE 3.
+			STEP 13 : PRINTLN "LENGTH is 3 :)".
+			STEP 14 : BREAK.
+			STEP 15 : CASE 5.
+			STEP 16 : PRINTLN "LENGTH is 5 :(".
+			STEP 17 : BREAK.
+			STEP 18 : DEFAULT.
+			STEP 19 : PRINTLN "LENGTH is "+l+" :|".
+			STEP 20 : BREAK.
 ```
 ## Syntax of result
 The syntax of the result, which might be considered a pseudocode to some extent, is somewhat similar to that used in the book `Introduction to Algorithms`. It may be explained as:
