@@ -20,7 +20,7 @@ System.out.println("sad_face");
 }
 ```
 * Do **NOT** write two statements in a single line.
-* Do **NOT** write a single statement in two lines. So avoid :
+* Do **NOT** write a single statement in multiple lines. So avoid :
 ```
 if(someCondition ||
     someOtherCondition)
@@ -40,7 +40,6 @@ if(someCondition) { //This is a comment.
 System.out.println("My work.");
 }
 ```
-This feature, however, might be buggy with multiple line comments.
 * Even with `case` statements, the code should look like :
 ```
 case 1 :

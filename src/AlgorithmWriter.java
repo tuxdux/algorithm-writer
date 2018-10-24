@@ -124,6 +124,7 @@ public class AlgorithmWriter {
     private String removeSingleLineComment(String line) {
         int length = line.length();
         int numberOfBrackets = 0;
+        int numberOfQuotes = 0;
         StringBuilder result = new StringBuilder();
         for(int i=0; i<length; i++) {
             char ch = line.charAt(i);
@@ -133,7 +134,13 @@ public class AlgorithmWriter {
             else if(ch==')') {
                 numberOfBrackets--;
             }
-            if(numberOfBrackets==0 && ch=='/') {
+            if(ch=='\"' && numberOfQuotes==0) {
+                numberOfQuotes++;
+            }
+            else if(ch=='\"') {
+                numberOfQuotes--;
+            }
+            if(numberOfBrackets==0 && numberOfQuotes==0 && ch=='/') {
                 return result.toString();
             }
             result.append(ch);

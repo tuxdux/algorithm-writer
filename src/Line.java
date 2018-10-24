@@ -12,17 +12,8 @@ class Line {
         //Remove any multiple line comments within the line itself
         //Example : A multiple line comment can be inserted in a statement as :
         //         if(/*Hello*/n==10)
-        if(isMultipleLineComment(line)) {
-            int start = line.indexOf('/');
-            int end = line.lastIndexOf('/');
-            //This is the comment without the last '/'. Suppose the comment
-            //was written as /*Hello there*/, then this string stores the
-            //value "/*Hello there*"
-            String comment = line.substring(start,end);
-            //Thus, we add the last '/' explicitly.
-            comment = comment+"/";
-            //Then, we remove the comment
-            line = line.replace(comment, "");
+        if(hasMultipleLineComment(line)) {
+            line = removeMultipleLineComment(line);
         }
         if(line.endsWith("{")) {
             //We do not replace all the braces, because it can be inside
@@ -231,17 +222,6 @@ class Line {
         //a loop statement.
         return line.startsWith("for") || line.startsWith("while") || line.startsWith("do");
     }
-    private boolean isMultipleLineComment(String line) {
-        int quoteOpen = line.indexOf('\"');
-        int quoteClose = line.lastIndexOf('\"');
-        int commentStart = line.indexOf("/*");
-        if(commentStart==-1) {
-            return false;
-        }
-        //If the symbol is in between the quotes, there is not a comment,
-        //but a string with '/*' in it.
-        return commentStart <= quoteOpen || commentStart >= quoteClose;
-    }
     private boolean isArrayInitialization() {
         int bracket = line.indexOf('(');
         int brace = line.indexOf('{');
@@ -261,6 +241,53 @@ class Line {
         //contain a bracket. If it does contain bracket, it will be processed
         //like a normal statement.
         return line.contains(",") && !line.contains("(");
+    }
+    private boolean hasMultipleLineComment(String line) {
+        int quoteOpen = line.indexOf('\"');
+        int quoteClose = line.lastIndexOf('\"');
+        int commentStart = line.indexOf("/*");
+        if(commentStart==-1) {
+            return false;
+        }
+        //If the symbol is in between the quotes, there is not a comment,
+        //but a string with '/*' in it.
+        return commentStart <= quoteOpen || commentStart >= quoteClose;
+    }
+    private String removeMultipleLineComment(String line) {
+        int length = line.length();
+        int numberOfQuotes = 0;
+        boolean commentOn = false;
+        StringBuilder result = new StringBuilder();
+        for(int i=0; i<length; i++) {
+            char ch = line.charAt(i);
+            //If comment is on and a the comment seems to end here
+            if(commentOn && ch=='/') {
+                int prev = i-1;
+                boolean stillOn = true;
+                if(prev!=0 && line.charAt(prev)=='*') {
+                    stillOn = false;
+                }
+                commentOn = stillOn;
+                continue;
+            }
+            //If a comment is on.
+            else if(commentOn) {
+                continue;
+            }
+            if(ch=='\"' && numberOfQuotes==0) {
+                numberOfQuotes++;
+            }
+            else if(ch=='\"') {
+                numberOfQuotes--;
+            }
+            //If all quotes are closed and a slash is encountered.
+            if(numberOfQuotes==0 && ch=='/') {
+                commentOn = true;
+                continue;
+            }
+            result.append(ch);
+        }
+        return result.toString();
     }
     private String processClass() {
         StringBuilder result = new StringBuilder("A ");
