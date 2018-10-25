@@ -9,9 +9,6 @@ class Line {
     private boolean semicolon = false;
     private boolean arrayInitialization;
     Line(String line, String className) {
-        //Remove any multiple line comments within the line itself
-        //Example : A multiple line comment can be inserted in a statement as :
-        //         if(/*Hello*/n==10)
         if(line.endsWith("{")) {
             //We do not replace all the braces, because it can be inside
             //an if statement or a character for that matter.
