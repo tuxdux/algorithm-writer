@@ -31,28 +31,29 @@ public class AlgorithmWriter {
             while(line!=null) {
                 //Next line.
                 algorithmWriter.nextLine();
-                //Remove any single line comments
-                line = algorithmWriter.removeSingleLineComment(line);
-                line = line.trim();
+                //If the line contains an inline multiple line comment.
+                if(line.contains("/*") && line.contains("*/")) {
+                    line = algorithmWriter.removeMultipleLineComment(line);
+                }
                 //If the line is a single line comment
                 if(line.startsWith("//")) {
                     line = reader.readLine();
                     continue;
                 }
                 //If this is the start of a new multiple line comment
-                if(line.startsWith("/*") && !algorithmWriter.commentIsOn) {
+                if(line.startsWith("/*")) {
                     algorithmWriter.commentIsOn = true;
+                }
+                //If a multiple line comment ends here,
+                if(line.endsWith("*/")) {
+                    algorithmWriter.commentIsOn = false;
+                }
+                if(line.equals("*/") || line.equals("/*")) {
                     line = reader.readLine();
                     continue;
                 }
                 //If a multiple line comment is going on, then do not process this line.
-                if(!line.contains("*/") && algorithmWriter.commentIsOn) {
-                    line = reader.readLine();
-                    continue;
-                }
-                //If a multiple line comment ends here,
-                if(line.contains("*/") && algorithmWriter.commentIsOn) {
-                    algorithmWriter.commentIsOn = false;
+                if(algorithmWriter.commentIsOn) {
                     line = reader.readLine();
                     continue;
                 }
@@ -66,6 +67,9 @@ public class AlgorithmWriter {
                     line = reader.readLine();
                     continue;
                 }
+                //Remove any single line comments
+                line = algorithmWriter.removeSingleLineComment(line);
+                line = line.trim();
                 //Line object of this read line
                 Line thisLine = new Line(line, className);
                 String processed = thisLine.process();
@@ -110,7 +114,7 @@ public class AlgorithmWriter {
         //Other exceptions caused most probably due to bad formatting.
         catch(Exception e) {
             System.out.println("[!] Error Occurred.");
-            System.out.println("[!] "+e.getMessage());
+            System.out.println("[!] "+e.getClass());
             System.out.println("[#] Could you check line number "+algorithmWriter.lineNumber+
                     " in your java file?");
             System.out.println("[#] Format it according to the README.md");
@@ -144,13 +148,81 @@ public class AlgorithmWriter {
                 numberOfBrackets--;
             }
             if(ch=='\"' && numberOfQuotes==0) {
-                numberOfQuotes++;
+                if(line.charAt(i-1)!='\\') {
+                    numberOfQuotes++;
+                }
             }
             else if(ch=='\"') {
-                numberOfQuotes--;
+                if(line.charAt(i-1)!='\\') {
+                    numberOfQuotes--;
+                }
             }
             if(numberOfBrackets==0 && numberOfQuotes==0 && ch=='/') {
-                return result.toString();
+                //If this character is the last character
+                if(i==length-1) {
+                    continue;
+                }
+                //If the next character is also a slash. Then, only,
+                //it will be a single line comment.
+                if(line.charAt(i+1)=='/') {
+                    return result.toString();
+                }
+            }
+            result.append(ch);
+        }
+        return result.toString();
+    }
+    private String removeMultipleLineComment(String line) {
+        int length = line.length();
+        int numberOfQuotes = 0;
+        boolean commentOn = false;
+        StringBuilder result = new StringBuilder();
+        for(int i=0; i<length; i++) {
+            char ch = line.charAt(i);
+            //This condition is for dealing with the meaningless comments
+            //like /*/*/. But this might cause some problems. If I come
+            //across such bug, I will try to fix it.
+            if(numberOfQuotes==0 && ch=='/' && i!=0 && i!=length-1
+                    && line.charAt(i-1)=='*' && line.charAt(i+1)=='/') {
+                continue;
+            }
+            if(numberOfQuotes==0 && ch=='*' && i!=0 && line.charAt(i-1)=='/') {
+                commentOn = true;
+                continue;
+            }
+            //If comment is on and the comment seems to end here
+            if(commentOn && ch=='/') {
+                boolean stillOn = true;
+                //If the previous character was an asterisk.
+                if(line.charAt(i-1)=='*') {
+                    stillOn = false;
+                }
+                commentOn = stillOn;
+                continue;
+            }
+            //If a comment is on.
+            if(commentOn) {
+                continue;
+            }
+            if(ch=='\"' && numberOfQuotes==0) {
+                if(i!=0 && line.charAt(i-1)!='\\') {
+                    numberOfQuotes++;
+                }
+            }
+            else if(ch=='\"') {
+                if(line.charAt(i-1)!='\\') {
+                    numberOfQuotes--;
+                }
+            }
+            //If all quotes are closed and a slash is encountered.
+            if(numberOfQuotes==0 && ch=='/') {
+                if(i==length-1) {
+                    continue;
+                }
+                if(line.charAt(i+1)=='*') {
+                    commentOn = true;
+                    continue;
+                }
             }
             result.append(ch);
         }

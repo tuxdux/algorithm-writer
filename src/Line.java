@@ -12,9 +12,6 @@ class Line {
         //Remove any multiple line comments within the line itself
         //Example : A multiple line comment can be inserted in a statement as :
         //         if(/*Hello*/n==10)
-        if(hasMultipleLineComment(line)) {
-            line = removeMultipleLineComment(line);
-        }
         if(line.endsWith("{")) {
             //We do not replace all the braces, because it can be inside
             //an if statement or a character for that matter.
@@ -191,12 +188,18 @@ class Line {
         return line.contains("class ") && !line.contains("(");
     }
     private boolean isConstructor() {
-        if(!line.contains(className)) {
+        int bracket = line.indexOf("(");
+        if(bracket==-1) {
             return false;
         }
-        line = removeUnnecessarySpaces(line);
-        String[] words = line.split("\\s+");
-        return words.length<2;
+        String declaration = line.substring(0,bracket);
+        String[] words = declaration.split("\\s+");
+        for(String word : words) {
+            if(word.equals(className)) {
+                return true;
+            }
+        }
+        return false;
     }
     private boolean isTry() {
         return line.equals("try") || line.startsWith("try(") || line.startsWith("try (");
@@ -241,53 +244,6 @@ class Line {
         //contain a bracket. If it does contain bracket, it will be processed
         //like a normal statement.
         return line.contains(",") && !line.contains("(");
-    }
-    private boolean hasMultipleLineComment(String line) {
-        int quoteOpen = line.indexOf('\"');
-        int quoteClose = line.lastIndexOf('\"');
-        int commentStart = line.indexOf("/*");
-        if(commentStart==-1) {
-            return false;
-        }
-        //If the symbol is in between the quotes, there is not a comment,
-        //but a string with '/*' in it.
-        return commentStart <= quoteOpen || commentStart >= quoteClose;
-    }
-    private String removeMultipleLineComment(String line) {
-        int length = line.length();
-        int numberOfQuotes = 0;
-        boolean commentOn = false;
-        StringBuilder result = new StringBuilder();
-        for(int i=0; i<length; i++) {
-            char ch = line.charAt(i);
-            //If comment is on and a the comment seems to end here
-            if(commentOn && ch=='/') {
-                int prev = i-1;
-                boolean stillOn = true;
-                if(prev!=0 && line.charAt(prev)=='*') {
-                    stillOn = false;
-                }
-                commentOn = stillOn;
-                continue;
-            }
-            //If a comment is on.
-            else if(commentOn) {
-                continue;
-            }
-            if(ch=='\"' && numberOfQuotes==0) {
-                numberOfQuotes++;
-            }
-            else if(ch=='\"') {
-                numberOfQuotes--;
-            }
-            //If all quotes are closed and a slash is encountered.
-            if(numberOfQuotes==0 && ch=='/') {
-                commentOn = true;
-                continue;
-            }
-            result.append(ch);
-        }
-        return result.toString();
     }
     private String processClass() {
         StringBuilder result = new StringBuilder("A ");
