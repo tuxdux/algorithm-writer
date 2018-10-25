@@ -191,12 +191,7 @@ class Line {
         }
         String declaration = line.substring(0,bracket);
         String[] words = declaration.split("\\s+");
-        for(String word : words) {
-            if(word.equals(className)) {
-                return true;
-            }
-        }
-        return false;
+        return words[words.length-1].equals(className);
     }
     private boolean isTry() {
         return line.equals("try") || line.startsWith("try(") || line.startsWith("try (");
