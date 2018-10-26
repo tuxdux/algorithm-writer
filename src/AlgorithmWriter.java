@@ -30,6 +30,7 @@ public class AlgorithmWriter {
             while(line!=null) {
                 //Next line.
                 algorithmWriter.nextLine();
+                line = line.trim();
                 //If the line contains an inline multiple line comment.
                 if(line.contains("/*") && line.contains("*/")) {
                     line = algorithmWriter.removeMultipleLineComment(line);
