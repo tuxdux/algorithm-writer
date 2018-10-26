@@ -9,9 +9,6 @@ class Line {
     private boolean semicolon = false;
     private boolean arrayInitialization;
     Line(String line, String className) {
-        //Remove any multiple line comments within the line itself
-        //Example : A multiple line comment can be inserted in a statement as :
-        //         if(/*Hello*/n==10)
         if(line.endsWith("{")) {
             //We do not replace all the braces, because it can be inside
             //an if statement or a character for that matter.
@@ -194,12 +191,7 @@ class Line {
         }
         String declaration = line.substring(0,bracket);
         String[] words = declaration.split("\\s+");
-        for(String word : words) {
-            if(word.equals(className)) {
-                return true;
-            }
-        }
-        return false;
+        return words[words.length-1].equals(className);
     }
     private boolean isTry() {
         return line.equals("try") || line.startsWith("try(") || line.startsWith("try (");
