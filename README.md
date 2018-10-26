@@ -109,7 +109,7 @@ STEP 1 : A PUBLIC class test is created.
 ## Syntax of result
 The syntax of the result, which might be considered a pseudocode to some extent, is somewhat similar to that used in the book `Introduction to Algorithms`. It may be explained as:
 
-* Indentation indicates block structure. For example, in the above example, the steps 7, 8 and 9 are inside the `for` loop started in step 6, but step 9 is out of it. Similarly, step 8 is inside the `if` statement in step 7, but step 9 is out of it.
+* Indentation indicates block structure. For example, in the above example, the steps 7, 8 and 9 are inside the `for` loop started in step 6, but step 10 is out of it. Similarly, step 8 is inside the `if` statement in step 7, but step 9 is out of it.
 * The symbol `←` indicates only assignment, and not initialization, which is specified by words. So, the statement `l ← other.length()` means that the value `other.length()` is assigned to the variable `l`.
 * The access modifiers, if any, are mentioned in the result. So, if a variable is declared as : `public boolean l`, the result is `A variable PUBLIC BOOLEAN l is declared`.
 
