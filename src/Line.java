@@ -29,6 +29,8 @@ class Line {
         }
         //Trim the line
         line = line.trim();
+        //Remove all unnecessary spaces.
+        line = line.replaceAll("\\s+", " ");
         //Finally, store the line in the class variable.
         this.line = line;
         this.className = className;
@@ -215,7 +217,10 @@ class Line {
     private boolean isLoop() {
         //If the line contains 'for' or 'while' or 'do' the line is
         //a loop statement.
-        return line.startsWith("for") || line.startsWith("while") || line.startsWith("do");
+        boolean isFor = line.startsWith("for(") || line.startsWith("for (");
+        boolean isWhile = line.startsWith("while(") || line.startsWith("while (");
+        boolean isDo = line.equals("do");
+        return isFor || isWhile || isDo;
     }
     private boolean isArrayInitialization() {
         int bracket = line.indexOf('(');
