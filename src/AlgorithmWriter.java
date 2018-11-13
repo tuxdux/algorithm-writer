@@ -6,11 +6,16 @@ public class AlgorithmWriter {
     private int step = 1;
     private boolean commentIsOn = false;
     private int lineNumber = 0;
+    private boolean willContinue = false;
     public static void main(String[] args) {
         AlgorithmWriter algorithmWriter = new AlgorithmWriter();
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter the path to the java file for your program:");
         String path = scan.nextLine();
+        if(!path.endsWith(".java")) {
+        	System.out.println("[!] This is not a java file.");
+        	System.exit(0);
+        }
         String className = path.substring(path.lastIndexOf(File.separator)+1, path.lastIndexOf('.'));
         if(path.startsWith(".")) {
             String dir = System.getProperty("user.dir");
@@ -119,6 +124,14 @@ public class AlgorithmWriter {
                     " in your java file?");
             System.out.println("[#] Format it according to the README.md");
         }
+    }
+    //This method is to check if a statement will continue in the next line.
+    //So as to support syntax like :
+    //if(someCondition ||
+    //   someOtherCondition)
+    //I will be working on this in the 'multiple-line' branch.
+    private boolean willContinueInNextLine() {
+        return false;
     }
     private String getTabs() {
         StringBuilder tab = new StringBuilder();
