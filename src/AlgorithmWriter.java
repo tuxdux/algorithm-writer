@@ -12,6 +12,10 @@ public class AlgorithmWriter {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter the path to the java file for your program:");
         String path = scan.nextLine();
+        if(!path.endsWith(".java")) {
+        	System.out.println("[!] This is not a java file.");
+        	System.exit(0);
+        }
         String className = path.substring(path.lastIndexOf(File.separator)+1, path.lastIndexOf('.'));
         if(path.startsWith(".")) {
             String dir = System.getProperty("user.dir");
