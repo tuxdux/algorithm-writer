@@ -417,14 +417,8 @@ class Line {
         //This is the type of if statement (simple if or else if)
         String type = line.substring(0,firstBracket).trim();
         String condition;
-        if(lastBracket==-1) {
-            //The condition when there is no bracket at the end of the line.
-            condition = line.substring(firstBracket+1);
-        }
-        else {
-            //This is the actual condition, even without the brackets.
-            condition = line.substring(firstBracket + 1, lastBracket).trim();
-        }
+        //This is the actual condition, even without the brackets.
+        condition = line.substring(firstBracket + 1, lastBracket).trim();
         return type.toUpperCase()+" "+condition;
     }
     private String processStatement() {
