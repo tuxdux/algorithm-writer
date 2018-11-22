@@ -49,8 +49,10 @@ public class AlgorithmWriter {
                     algorithmWriter.commentIsOn = true;
                 }
                 //If a multiple line comment ends here,
-                if(line.endsWith("*/")) {
+                if(line.endsWith("*/") && algorithmWriter.commentIsOn) {
                     algorithmWriter.commentIsOn = false;
+                    line = reader.readLine();
+                    continue;
                 }
                 if(line.equals("*/") || line.equals("/*")) {
                     line = reader.readLine();
