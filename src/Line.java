@@ -187,6 +187,12 @@ class Line {
         return line.contains("class ") && !line.contains("(");
     }
     private boolean isConstructor() {
+    	//The line should not contain the new operator.
+    	//Otherwise, it obviously can be the initialization
+    	//of the same class.
+    	if (line.contains("new ")) {
+    		return false;
+    	}
         int bracket = line.indexOf("(");
         if(bracket==-1) {
             return false;
